@@ -1,0 +1,13 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<main style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh;">
+    <h1 style="color: #e67e22; font-size: 2.5em; margin-bottom: 20px;">
+        Welcome to the Breast Cancer Detection System
+    </h1>
+    <a href="{{ url_for('diagnosis_options') }}" class="button" style="padding: 12px 24px; background-color: #e67e22; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+        Start Diagnosis
+    </a>
+</main>
+{% endblock %}

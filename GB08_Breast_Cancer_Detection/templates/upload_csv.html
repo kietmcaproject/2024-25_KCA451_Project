@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Lab Report (.csv)</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .upload-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .upload-guide {
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .btn {
+            padding: 12px 24px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .btn:hover {
+            background-color: #d35400;
+        }
+        .btn.secondary {
+            background-color: #6c757d;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: none;
+        }
+        .results-container {
+            margin-top: 40px;
+            text-align: left;
+        }
+        .summary-stats {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+            justify-content: center;
+        }
+        .stat-card {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            max-width: 200px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .benign {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+        .malignant {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+        }
+        #resultsChart {
+            width: 300px !important;
+            height: 300px !important;
+            margin: 30px auto;
+            display: block !important;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #F29C1F;
+        }
+        .back-btn {
+            background-color: transparent;
+            color: white;
+            padding: 8px 15px;
+            border: 1px solid white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        .back-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        .navbar-brand {
+            font-size: 1.8em;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        #downloadBtn {
+    margin-right: 10px;
+    background-color: #2ecc71; /* Green color */
+}
+
+#downloadBtn:hover {
+    background-color: #27ae60; /* Darker green */
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/diagnosis-options" class="btn back-btn">← Back to Options</a>
+        <!-- <a href="/" class="navbar-brand">Breast Cancer Detection</a> -->
+    </nav>
+
+    <main>
+        <section class="upload-section">
+            <h1>Upload Lab Report (.csv)</h1>
+            <div class="upload-guide">
+                <h2>Upload Your CSV File</h2>
+                <p>Please upload a CSV file containing breast cancer diagnostic data.</p>
+                <a href="{{ url_for('static', filename='sample-data.csv') }}" class="btn secondary" download>Download Sample CSV</a>
+            </div>
+            
+            <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="csv_file">Choose CSV File:</label>
+                    <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+                    <small>Max file size: 5MB</small>
+                </div>
+                <button type="submit" class="btn">Upload and Predict</button>
+            </form>
+
+            <div id="error" class="error"></div>
+
+            <div id="results" class="results-container" style="display:none;">
+                <h3>Prediction Results</h3>
+                <div class="summary-stats">
+                    <div class="stat-card benign">
+                        <h4>Benign Cases</h4>
+                        <p id="benignCount">0</p>
+                    </div>
+                    <div class="stat-card malignant">
+                        <h4>Malignant Cases</h4>
+                        <p id="malignantCount">0</p>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="resultsChart"></canvas>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <button id="downloadBtn" class="btn secondary">
+                        Download Results as CSV
+                    </button>
+                    <a href="/diagnosis-options" class="btn secondary">Back to Options</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('uploadForm');
+            const errorDiv = document.getElementById('error');
+            const resultsDiv = document.getElementById('results');
+            
+            form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    errorDiv.style.display = 'none';
+    resultsDiv.style.display = 'none';
+
+    const file = document.getElementById('csv_file').files[0];
+    if (!file) {
+        showError('Please select a file first');
+        return;
+    }
+
+    try {
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Processing...";
+
+        const formData = new FormData();
+        formData.append('csv_file', file);
+
+        const response = await fetch('/upload-csv', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.error) {
+            throw new Error(result.error);
+        }
+
+        // Display results
+        document.getElementById('benignCount').textContent = result.benign_count;
+        document.getElementById('malignantCount').textContent = result.malignant_count;
+        renderChart(result.benign_count, result.malignant_count);
+        resultsDiv.style.display = 'block';
+
+    } catch (error) {
+        showError(error.message);
+        console.error("Upload error:", error);
+    } finally {
+        // Reset button state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Upload and Predict";
+    }
+});
+            
+            function showError(message) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+            
+            // Remove the window. prefix and declare chart variable properly
+let resultsChart; // Declare at the top of your script section
+
+function renderChart(benignCount, malignantCount) {
+    const ctx = document.getElementById('resultsChart').getContext('2d');
+    
+    // Destroy previous chart if it exists
+    if (resultsChart) {
+        resultsChart.destroy();
+    }
+    
+    resultsChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Benign', 'Malignant'],
+            datasets: [{
+                data: [benignCount, malignantCount],
+                backgroundColor: ['#28a745', '#dc3545'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+// function downloadResultsAsCSV() {
+//     // Get the data you want to export (modify as needed)
+//     const benignCount = document.getElementById('benignCount').textContent;
+//     const malignantCount = document.getElementById('malignantCount').textContent;
+    
+//     // Format as CSV
+//     const csvData = [
+//         'Prediction Type,Count',
+//         `Benign,${benignCount}`,
+//         `Malignant,${malignantCount}`
+//     ].join('\n');
+    
+//     downloadResults(csvData);
+// }
+// Add this with your other functions
+function downloadResults() {
+    const benign = document.getElementById('benignCount').textContent;
+    const malignant = document.getElementById('malignantCount').textContent;
+    
+    const csvContent = [
+        'Prediction Type,Count',
+        `Benign,${benign}`,
+        `Malignant,${malignant}`
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'prediction_results.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Add event listener for the button
+document.getElementById('downloadBtn').addEventListener('click', downloadResults);
+        });
+    </script>
+</body>
+</html>

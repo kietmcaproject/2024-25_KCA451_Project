@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="registration-container">
+    <div class="registration-image">
+        <img src="{{ url_for('static', filename='images/register-image.jpg') }}" alt="Healthcare Community">
+        <div class="image-overlay">
+            <h2>Join Our Community</h2>
+            <p>Together we can make a difference in breast cancer awareness</p>
+        </div>
+    </div>
+    
+    <div class="registration-form">
+        <div class="form-header">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+            <h2>Create Account</h2>
+            <p>Register to access personalized health resources</p>
+        </div>
+
+        {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('register') }}" id="registerForm" class="auth-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="name" id="name" placeholder="Enter your full name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" id="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" id="password" placeholder="Create a password" required>
+                    <div class="password-requirements">
+                        <p>Password must contain:</p>
+                        <ul>
+                            <li class="req-char">8+ characters</li>
+                            <li class="req-upper">1 uppercase letter</li>
+                            <li class="req-number">1 number</li>
+                            <li class="req-special">1 special character</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm your password" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" name="age" id="age" min="18" max="100" placeholder="Enter your age">
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a></label>
+            </div>
+
+            <button type="submit" class="btn-register">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+
+            <div class="login-link">
+                Already have an account? <a href="{{ url_for('login') }}">Sign in</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Base Styles */
+    .registration-container {
+        display: flex;
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Image Section */
+    .registration-image {
+        flex: 1;
+        background: linear-gradient(rgba(244, 219, 193, 0.7), rgba(244, 219, 193, 0.7));
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        overflow: hidden;
+    }
+
+    .registration-image img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
+
+    .image-overlay {
+        text-align: center;
+        padding: 2rem;
+        color:#4e1905;
+        max-width: 80%;
+    }
+
+    .image-overlay h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .image-overlay p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    /* Form Section */
+    .registration-form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 4rem;
+        background-color: #ffffff;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-header .logo {
+        height: 60px;
+        margin-bottom: 1rem;
+    }
+
+    .form-header h2 {
+        color: #D1430E;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+        color: #666;
+    }
+
+    /* Form Elements */
+    .auth-form {
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #555;
+        font-weight: 600;
+    }
+
+    .input-with-icon {
+        position: relative;
+    }
+
+    .input-with-icon i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #D1430E;
+    }
+
+    .input-with-icon input {
+        width: 100%;
+        padding: 12px 12px 12px 40px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input[type="number"] {
+        padding: 12px;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .input-with-icon input:focus {
+        border-color: #D1430E;
+        box-shadow: 0 0 0 3px rgba(209, 67, 14, 0.2);
+        outline: none;
+    }
+
+    /* Password Requirements */
+    .password-requirements {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        color: #666;
+    }
+
+    .password-requirements p {
+        margin-bottom: 0.3rem;
+        font-weight: 600;
+    }
+
+    .password-requirements ul {
+        padding-left: 1.2rem;
+        margin: 0;
+    }
+
+    .password-requirements li {
+        margin-bottom: 0.2rem;
+    }
+
+    /* Error Message */
+    .error-message {
+        background-color: #ffebee;
+        color: #c62828;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Checkbox */
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .checkbox-group input {
+        width: auto;
+        margin-right: 10px;
+    }
+
+    .terms-link {
+        color: #D1430E;
+        text-decoration: none;
+    }
+
+    .terms-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Register Button */
+    .btn-register {
+        width: 100%;
+        padding: 12px;
+        background-color: #D1430E;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 1rem;
+    }
+
+    .btn-register:hover {
+        background-color: #b8380c;
+    }
+
+    /* Login Link */
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #666;
+    }
+
+    .login-link a {
+        color: #D1430E;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .registration-container {
+            flex-direction: column;
+        }
+
+        .registration-image {
+            display: none;
+        }
+
+        .registration-form {
+            padding: 2rem;
+        }
+    }
+</style>
+
+<script>
+    // Password validation visual feedback
+    const passwordInput = document.getElementById('password');
+    const charReq = document.querySelector('.req-char');
+    const upperReq = document.querySelector('.req-upper');
+    const numberReq = document.querySelector('.req-number');
+    const specialReq = document.querySelector('.req-special');
+
+    passwordInput.addEventListener('input', function() {
+        const value = this.value;
+        
+        // Check length
+        if (value.length >= 8) {
+            charReq.style.color = 'green';
+        } else {
+            charReq.style.color = 'inherit';
+        }
+        
+        // Check uppercase
+        if (/[A-Z]/.test(value)) {
+            upperReq.style.color = 'green';
+        } else {
+            upperReq.style.color = 'inherit';
+        }
+        
+        // Check number
+        if (/[0-9]/.test(value)) {
+            numberReq.style.color = 'green';
+        } else {
+            numberReq.style.color = 'inherit';
+        }
+        
+        // Check special character
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+            specialReq.style.color = 'green';
+        } else {
+            specialReq.style.color = 'inherit';
+        }
+    });
+    // Add this to your existing script section
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    console.log("Form submission triggered!");
+    // If this doesn't appear in console when clicking Register, something is blocking submission
+});
+</script>
+{% endblock %}

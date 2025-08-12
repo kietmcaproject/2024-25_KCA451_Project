@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container support-section">
+    <h2 class="support-title">Support & Resources</h2>
+    <p class="support-intro">Find help and guidance through these trusted Indian and global breast cancer support resources.</p>
+    
+    <div class="support-tabs">
+        <button class="tab-btn active" onclick="openTab('india')">India</button>
+        <button class="tab-btn" onclick="openTab('global')">Global</button>
+    </div>
+
+    <!-- India Resources -->
+    <div id="india" class="tab-content active-tab">
+        <div class="support-categories">
+            <!-- Helplines Section -->
+            <div class="support-card">
+                <h3><i class="fas fa-phone-alt"></i> Indian Helplines</h3>
+                <ul>
+                    <li><strong>Indian Cancer Society:</strong> 1800-22-1951 (Toll-free)</li>
+                    <li><strong>Cancer Patients Aid Association:</strong> +91-22-24924000</li>
+                    <li><strong>National Cancer Helpline:</strong> 011-22901701 (Delhi)</li>
+                    <li><strong>Women's Cancer Initiative - Tata Memorial:</strong> 022-24177000</li>
+                </ul>
+            </div>
+
+            <!-- Hospitals Section -->
+            <div class="support-card">
+                <h3><i class="fas fa-hospital"></i> Specialized Hospitals</h3>
+                <ul>
+                    <li><strong>Tata Memorial Hospital, Mumbai:</strong> <a href="https://tmc.gov.in" target="_blank">tmc.gov.in</a></li>
+                    <li><strong>All India Institute of Medical Sciences (AIIMS), Delhi:</strong> <a href="https://www.aiims.edu" target="_blank">aiims.edu</a></li>
+                    <li><strong>Rajiv Gandhi Cancer Institute, Delhi:</strong> <a href="https://www.rgci.org" target="_blank">rgci.org</a></li>
+                    <li><strong>Adyar Cancer Institute, Chennai:</strong> <a href="https://www.cancerinstitutewia.in" target="_blank">cancerinstitutewia.in</a></li>
+                </ul>
+            </div>
+
+            <!-- NGOs Section -->
+            <div class="support-card">
+                <h3><i class="fas fa-hands-helping"></i> NGOs & Support Groups</h3>
+                <ul>
+                    <li><strong>CanSupport Delhi:</strong> <a href="https://www.cansupport.org" target="_blank">cansupport.org</a></li>
+                    <li><strong>Cancer Foundation of India:</strong> <a href="https://www.cancerfoundationofindia.org" target="_blank">cancerfoundationofindia.org</a></li>
+                    <li><strong>Uday Foundation:</strong> <a href="https://www.udayfoundation.org" target="_blank">udayfoundation.org</a></li>
+                    <li><strong>Indian Breast Cancer Survivors Network:</strong> Facebook support group</li>
+                </ul>
+            </div>
+
+            <!-- Government Schemes -->
+            <div class="support-card">
+                <h3><i class="fas fa-rupee-sign"></i> Government Schemes</h3>
+                <ul>
+                    <li><strong>Ayushman Bharat Yojana:</strong> Coverage for cancer treatment</li>
+                    <li><strong>Health Minister's Cancer Patient Fund:</strong> Financial assistance</li>
+                    <li><strong>State Health Missions:</strong> Varies by state - check local hospitals</li>
+                    <li><strong>National Cancer Grid:</strong> Connects cancer centers nationwide</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Resources -->
+    <div id="global" class="tab-content">
+        <div class="support-categories">
+            <!-- Global Helplines -->
+            <div class="support-card">
+                <h3><i class="fas fa-globe"></i> Global Helplines</h3>
+                <ul>
+                    <li><strong>WHO Cancer Program:</strong> <a href="https://www.who.int/cancer" target="_blank">who.int/cancer</a></li>
+                    <li><strong>American Cancer Society:</strong> 1-800-227-2345</li>
+                    <li><strong>Breast Cancer Now (UK):</strong> 0808 800 6000</li>
+                    <li><strong>Cancer Council Australia:</strong> 13 11 20</li>
+                </ul>
+            </div>
+
+            <!-- Global Organizations -->
+            <div class="support-card">
+                <h3><i class="fas fa-globe-asia"></i> International Organizations</h3>
+                <ul>
+                    <li><strong>Breast Cancer Research Foundation:</strong> <a href="https://www.bcrf.org" target="_blank">bcrf.org</a></li>
+                    <li><strong>Susan G. Komen:</strong> <a href="https://www.komen.org" target="_blank">komen.org</a></li>
+                    <li><strong>Union for International Cancer Control:</strong> <a href="https://www.uicc.org" target="_blank">uicc.org</a></li>
+                </ul>
+            </div>
+
+            <!-- Global Research -->
+            <div class="support-card">
+                <h3><i class="fas fa-flask"></i> Research & Clinical Trials</h3>
+                <ul>
+                    <li><strong>ClinicalTrials.gov:</strong> <a href="https://clinicaltrials.gov" target="_blank">Find trials worldwide</a></li>
+                    <li><strong>International Cancer Genome Consortium:</strong> <a href="https://icgc.org" target="_blank">icgc.org</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="emergency-note">
+        <p><i class="fas fa-exclamation-triangle"></i> <strong>Emergency Contacts (India):</strong> Dial 108 for ambulance or visit nearest government hospital</p>
+    </div>
+
+    <div class="awareness-section">
+        <h3><i class="fas fa-info-circle"></i> Breast Cancer Awareness in India</h3>
+        <ul>
+            <li>October is observed as Breast Cancer Awareness Month</li>
+            <li>Mumbai, Delhi, and Chennai have the highest incidence rates</li>
+            <li>Early detection through mammography available at most district hospitals</li>
+            <li>Pink Ribbon Campaigns organized nationwide during October</li>
+        </ul>
+    </div>
+</section>
+
+<style>
+    .support-section {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .support-title {
+        color: #e67e22;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .support-intro {
+        text-align: center;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: #555;
+    }
+    
+    .support-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+    
+    .tab-btn {
+        padding: 0.5rem 1.5rem;
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    
+    .tab-btn.active {
+        background: #e83e8c;
+        color: white;
+        border-color: #e83e8c;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active-tab {
+        display: block;
+    }
+    
+    .support-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .support-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .support-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .support-card h3 {
+        color: #e67e22;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .support-card ul {
+        padding-left: 1.2rem;
+    }
+    
+    .support-card li {
+        margin-bottom: 0.8rem;
+        line-height: 1.4;
+    }
+    
+    .support-card a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    .support-card a:hover {
+        text-decoration: underline;
+    }
+    
+    .emergency-note {
+        margin: 2rem 0;
+        padding: 1rem;
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        border-radius: 4px;
+    }
+    
+    .emergency-note p {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .awareness-section {
+        background: #f8f0f5;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-top: 2rem;
+    }
+    
+    .awareness-section h3 {
+        color: #e67e22;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .support-categories {
+            grid-template-columns: 1fr;
+        }
+        
+        .support-tabs {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+
+<script>
+    function openTab(tabName) {
+        // Hide all tab contents
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove("active-tab");
+        }
+        
+        // Remove active class from all buttons
+        const tabButtons = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+        
+        // Show current tab and mark button as active
+        document.getElementById(tabName).classList.add("active-tab");
+        event.currentTarget.classList.add("active");
+    }
+</script>
+{% endblock %}

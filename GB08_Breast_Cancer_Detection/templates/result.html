@@ -1,0 +1,33 @@
+// result.js - to be included in your HTML
+document.addEventListener('DOMContentLoaded', function() {
+    // Get result data from URL parameters or API
+    const urlParams = new URLSearchParams(window.location.search);
+    const prediction = urlParams.get('prediction');
+    const confidence = urlParams.get('confidence') || 85; // Default if not provided
+    
+    // Update DOM elements
+    const resultCard = document.querySelector('.result-card');
+    const predictionText = document.getElementById('prediction-text');
+    const confidenceMeter = document.querySelector('.meter span');
+    const messageBox = document.querySelector('.message-box');
+    
+    if (prediction === 'malignant') {
+        resultCard.classList.add('malignant');
+        messageBox.innerHTML = `
+            <div class="warning-box">
+                <p>⚠️ This suggests potential cancerous cells. Please consult a healthcare professional immediately.</p>
+            </div>
+        `;
+    } else {
+        resultCard.classList.add('benign');
+        messageBox.innerHTML = `
+            <div class="success-box">
+                <p>✓ This suggests benign characteristics. Regular checkups are still recommended.</p>
+            </div>
+        `;
+    }
+    
+    predictionText.textContent = prediction.charAt(0).toUpperCase() + prediction.slice(1);
+    confidenceMeter.style.width = `${confidence}%`;
+    confidenceMeter.textContent = `${confidence}%`;
+});
