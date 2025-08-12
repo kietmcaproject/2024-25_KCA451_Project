@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Symptom Checker Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .quiz-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        #result {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        #result.visible {
+            opacity: 1;
+            height: auto;
+        }
+        .high-risk {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+        .moderate-risk {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+        }
+        .low-risk {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+        #riskChart {
+            width: 300px !important;
+            height: 300px !important;
+            display: block !important;
+            margin: 20px auto;
+        }
+        .btn {
+            padding: 12px 24px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #d35400;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #F29C1F;
+        }
+        .back-btn {
+            background-color: transparent;
+            color: white;
+            padding: 8px 15px;
+            border: 1px solid white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        .back-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/diagnosis-options" class="btn back-btn">← Back to Options</a>
+        
+    </nav>
+
+    <main>
+        <section class="quiz-section">
+            <h1>Symptom Checker Quiz</h1>
+            <h2>Assess Your Symptoms</h2>
+
+            <form id="quizForm">
+                <h3>1. Breast Symptoms</h3>
+                <div class="form-group">
+                    <label>Do you have a lump?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="lump" value="yes" required> Yes</label>
+                        <label><input type="radio" name="lump" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Do you have pain?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="pain" value="yes" required> Yes</label>
+                        <label><input type="radio" name="pain" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Has the shape of your breast changed?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="shape_change" value="yes" required> Yes</label>
+                        <label><input type="radio" name="shape_change" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Have you noticed any skin changes (dimpling, redness)?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="skin_change" value="yes" required> Yes</label>
+                        <label><input type="radio" name="skin_change" value="no"> No</label>
+                    </div>
+                </div>
+
+                <h3>2. Nipple Symptoms</h3>
+                <div class="form-group">
+                    <label>Do you have nipple irritation?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="nipple_irritation" value="yes" required> Yes</label>
+                        <label><input type="radio" name="nipple_irritation" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Is there any discharge from your nipple?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="discharge" value="yes" required> Yes</label>
+                        <label><input type="radio" name="discharge" value="no"> No</label>
+                    </div>
+                </div>
+
+                <h3>3. Lifestyle & Risk Factors</h3>
+                <div class="form-group">
+                    <label>Do you smoke or consume alcohol?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="smoke_alcohol" value="yes" required> Yes</label>
+                        <label><input type="radio" name="smoke_alcohol" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Do you have a family history of breast cancer?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="family_history" value="yes" required> Yes</label>
+                        <label><input type="radio" name="family_history" value="no"> No</label>
+                    </div>
+                </div>
+
+                <h3>4. Screening & Awareness</h3>
+                <div class="form-group">
+                    <label>Have you ever done a breast self-exam?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="self_exam" value="yes" required> Yes</label>
+                        <label><input type="radio" name="self_exam" value="no"> No</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Have you had a mammogram in the past year?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="mammogram" value="yes" required> Yes</label>
+                        <label><input type="radio" name="mammogram" value="no"> No</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Submit</button>
+            </form>
+
+            <div id="result" class="result">
+                <h3>Risk Level: <span id="riskLevel"></span></h3>
+                <p id="message"></p>
+                <div class="recommendations" id="recommendations"></div>
+                <canvas id="riskChart" width="300" height="300"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('quizForm');
+            const resultDiv = document.getElementById('result');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Calculate score based on form inputs
+                const formData = new FormData(form);
+                let score = 0;
+                
+                // Define weights for each question
+                const weights = {
+                    lump: 2,
+                    pain: 1,
+                    shape_change: 2,
+                    skin_change: 2,
+                    nipple_irritation: 1,
+                    discharge: 2,
+                    smoke_alcohol: 1,
+                    family_history: 2,
+                    self_exam: 1,
+                    mammogram: 1
+                };
+                
+                // Calculate total score
+                for (const [name, value] of formData.entries()) {
+                    if (value === 'yes') score += weights[name];
+                }
+                
+                // Determine risk level
+                let riskLevel, message, recommendations;
+                if (score <= 3) {
+                    riskLevel = 'Low Risk';
+                    message = 'Your answers suggest a low risk of breast cancer.';
+                    recommendations = [
+                        'Continue regular self-exams',
+                        'Maintain annual screening schedule',
+                        'Consult your doctor if you notice any changes'
+                    ];
+                } else if (score <= 6) {
+                    riskLevel = 'Moderate Risk';
+                    message = 'Your answers suggest a moderate risk of breast cancer.';
+                    recommendations = [
+                        'Schedule a clinical breast exam within the next month',
+                        'Perform monthly self-exams',
+                        'Consider diagnostic screening'
+                    ];
+                } else {
+                    riskLevel = 'High Risk';
+                    message = 'Your answers suggest a high risk of breast cancer.';
+                    recommendations = [
+                        'Schedule an appointment with a healthcare provider immediately',
+                        'Consider diagnostic mammography or ultrasound',
+                        'Discuss genetic testing options with your doctor'
+                    ];
+                }
+                
+                // Display results
+                document.getElementById('riskLevel').textContent = riskLevel;
+                document.getElementById('message').textContent = message;
+                
+                // Show recommendations
+                const recommendationsDiv = document.getElementById('recommendations');
+                recommendationsDiv.innerHTML = '<h4>Recommended Actions:</h4><ul>' + 
+                    recommendations.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                
+                // Set appropriate styling
+                resultDiv.className = 'result visible ' + riskLevel.toLowerCase().replace(' ', '-');
+                
+                // Create or update chart
+                renderRiskChart(riskLevel);
+                
+                // Scroll to results
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            function renderRiskChart(riskLevel) {
+                const canvas = document.getElementById('riskChart');
+                const ctx = canvas.getContext('2d');
+                
+                // Destroy previous chart if exists
+                if (window.riskChart) {
+                    window.riskChart.destroy();
+                }
+                
+                window.riskChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Low Risk', 'Moderate Risk', 'High Risk'],
+                        datasets: [{
+                            data: [
+                                riskLevel === 'Low Risk' ? 1 : 0,
+                                riskLevel === 'Moderate Risk' ? 1 : 0,
+                                riskLevel === 'High Risk' ? 1 : 0
+                            ],
+                            backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

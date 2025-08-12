@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>Welcome, {{ user.name }}!</h1>
+    
+    <div class="dashboard-section">
+        <h2>Your Account</h2>
+        <p>Email: {{ user.email }}</p>
+        <p>Age: {{ user.age }}</p>
+    </div>
+
+    <div class="dashboard-section">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="{{ url_for('predict') }}" class="btn">Make Prediction</a>
+            <a href="{{ url_for('symptom_checker') }}" class="btn">Symptom Checker</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.dashboard-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn {
+    display: block;
+    padding: 12px;
+    background: #D1430E;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #b8380c;
+}
+
+.btn-logout {
+    background: #6c757d;
+}
+
+.btn-logout:hover {
+    background: #5a6268;
+}
+</style>
+{% endblock %}

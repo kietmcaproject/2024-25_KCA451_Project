@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Breast Cancer Assessment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v=3.0">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-top: 2rem;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #F29C1F; /* Orange color */
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .back-btn:hover {
+            background-color: #E67E22; /* Darker orange on hover */
+            color: white;
+        }
+        .back-btn::before {
+            content: "←";
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: var(--light);
+            border-radius: 8px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+        }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 2rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: #1a252f;
+        }
+        
+        /* Results Section */
+        .result-card {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none;
+            background: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .benign {
+            border-left: 5px solid var(--success);
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        .malignant {
+            border-left: 5px solid var(--danger);
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .confidence-meter {
+            height: 25px;
+            background: #eee;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+        
+        .confidence-meter span {
+            display: block;
+            height: 100%;
+            background: var(--secondary);
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            line-height: 25px;
+            transition: width 0.5s ease;
+        }
+        
+        .recommendation {
+            padding: 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 1rem 0;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--success);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .download-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('diagnosis_options') }}" class="back-btn">
+             Back to Options
+        </a>
+        
+        <h1>Breast Cancer Assessment</h1>
+        
+        <section>
+            <h2>Enter Tumor Characteristics</h2>
+            
+            <form id="predictionForm">
+                <!-- Feature 1: Mean Radius -->
+                <div class="form-group">
+                    <label for="feature_1">1. Mean Radius (mean of distances from center to points on the perimeter):</label>
+                    <input type="number" step="0.01" id="feature_1" name="feature_1" placeholder="e.g. 13.54" required>
+                </div>
+                
+                <!-- Feature 2: Mean Texture -->
+                <div class="form-group">
+                    <label for="feature_2">2. Mean Texture (standard deviation of gray-scale values):</label>
+                    <input type="number" step="0.01" id="feature_2" name="feature_2" placeholder="e.g. 14.36" required>
+                </div>
+
+                <!-- Feature 3: Mean Perimeter -->
+                <div class="form-group">
+                    <label for="feature_3">3. Mean Perimeter:</label>
+                    <input type="number" step="0.01" id="feature_3" name="feature_3" placeholder="e.g. 87.46" required>
+                </div>
+
+                <!-- Feature 4: Mean Area -->
+                <div class="form-group">
+                    <label for="feature_4">4. Mean Area:</label>
+                    <input type="number" step="0.01" id="feature_4" name="feature_4" placeholder="e.g. 566.3" required>
+                </div>
+                
+                <!-- Feature 5: Mean Smoothness -->
+                <div class="form-group">
+                    <label for="feature_5">5. Mean Smoothness (local variation in radius lengths):</label>
+                    <input type="number" step="0.00001" id="feature_5" name="feature_5" placeholder="e.g. 0.09779" required>
+                </div>
+
+                <!-- Feature 6: Mean Compactness -->
+                <div class="form-group">
+                    <label for="feature_6">6. Mean Compactness (perimeter² / area - 1.0):</label>
+                    <input type="number" step="0.00001" id="feature_6" name="feature_6" placeholder="e.g. 0.08129" required>
+                </div>
+
+                <!-- Feature 7: Mean Concavity -->
+                <div class="form-group">
+                    <label for="feature_7">7. Mean Concavity (severity of concave portions of the contour):</label>
+                    <input type="number" step="0.00001" id="feature_7" name="feature_7" placeholder="e.g. 0.06664" required>
+                </div>
+                
+                <!-- Feature 8: Mean Concave Points -->
+                <div class="form-group">
+                    <label for="feature_8">8. Mean Concave Points (number of concave portions of the contour):</label>
+                    <input type="number" step="0.00001" id="feature_8" name="feature_8" placeholder="e.g. 0.04781" required>
+                </div>
+                
+                <!-- Feature 9: Mean Symmetry -->
+                <div class="form-group">
+                    <label for="feature_9">9. Mean Symmetry:</label>
+                    <input type="number" step="0.00001" id="feature_9" name="feature_9" placeholder="e.g. 0.1885" required>
+                </div>
+
+                <!-- Feature 10: Mean Fractal Dimension -->
+                <div class="form-group">
+                    <label for="feature_10">10. Mean Fractal Dimension ("coastline approximation" - 1):</label>
+                    <input type="number" step="0.00001" id="feature_10" name="feature_10" placeholder="e.g. 0.05766" required>
+                </div>
+
+                <button type="button" id="submitBtn" class="submit-btn">
+                    <span class="spinner" style="display:none;"></span>
+                    <span class="btn-text">Analyze Tumor Characteristics</span>
+                </button>
+            </form>
+        </section>
+        
+        <div id="resultCard" class="result-card">
+            <h2>Diagnosis Results</h2>
+            <p id="predictionText" style="font-size: 1.2rem; font-weight: 500;"></p>
+            
+            <div class="confidence-meter">
+                <span id="confidenceMeter"></span>
+            </div>
+            
+            <div id="recommendation" class="recommendation"></div>
+            
+            <button id="downloadBtn" class="download-btn">
+                Download Full Report
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = submitBtn.querySelector('.spinner');
+            const btnText = submitBtn.querySelector('.btn-text');
+            
+            submitBtn.addEventListener('click', async function() {
+                // Validate form first
+                const form = document.getElementById('predictionForm');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                spinner.style.display = 'inline-block';
+                btnText.textContent = 'Analyzing...';
+                
+                try {
+                    // Collect data
+                    const data = {
+                        feature_1: parseFloat(document.getElementById('feature_1').value),
+                        feature_2: parseFloat(document.getElementById('feature_2').value),
+                        feature_3: parseFloat(document.getElementById('feature_3').value),
+                        feature_4: parseFloat(document.getElementById('feature_4').value),
+                        feature_5: parseFloat(document.getElementById('feature_5').value),
+                        feature_6: parseFloat(document.getElementById('feature_6').value),
+                        feature_7: parseFloat(document.getElementById('feature_7').value),
+                        feature_8: parseFloat(document.getElementById('feature_8').value),
+                        feature_9: parseFloat(document.getElementById('feature_9').value),
+                        feature_10: parseFloat(document.getElementById('feature_10').value)
+                    };
+                    
+                    const response = await fetch('/manual-entry', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) throw new Error(await response.text());
+                    
+                    const result = await response.json();
+                    
+                    // Display results
+                    const resultCard = document.getElementById('resultCard');
+                    const predictionText = document.getElementById('predictionText');
+                    const confidenceMeter = document.getElementById('confidenceMeter');
+                    const recommendation = document.getElementById('recommendation');
+                    
+                    if (result.prediction === 'Malignant') {
+                        resultCard.className = 'result-card malignant';
+                        predictionText.textContent = 'Malignant Tumor Detected';
+                        recommendation.textContent = '⚠️ Our analysis suggests concerning characteristics. Please consult with an oncologist immediately for further evaluation.';
+                    } else {
+                        resultCard.className = 'result-card benign';
+                        predictionText.textContent = 'Benign Tumor Characteristics';
+                        recommendation.textContent = '✓ The analysis suggests benign characteristics. However, regular monitoring and follow-up with your healthcare provider is recommended.';
+                    }
+                    
+                    confidenceMeter.style.width = `${result.confidence}%`;
+                    confidenceMeter.textContent = `${result.confidence}% Confidence`;
+                    resultCard.style.display = 'block';
+                    
+                    // Scroll to results
+                    resultCard.scrollIntoView({ behavior: 'smooth' });
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(`Analysis failed: ${error.message}`);
+                } finally {
+                    submitBtn.disabled = false;
+                    spinner.style.display = 'none';
+                    btnText.textContent = 'Re-analyze Tumor Characteristics';
+                }
+            });
+            
+            // Download report functionality
+            document.getElementById('downloadBtn').addEventListener('click', function() {
+                const form = document.getElementById('predictionForm');
+                const prediction = document.getElementById('predictionText').textContent;
+                const confidence = document.getElementById('confidenceMeter').textContent;
+                const recommendation = document.getElementById('recommendation').textContent;
+                
+                const reportContent = `Breast Cancer Diagnosis Report\n\n` +
+                    `=== DIAGNOSIS ===\n` +
+                    `Result: ${prediction}\n` +
+                    `Confidence Level: ${confidence}\n\n` +
+                    `=== RECOMMENDATION ===\n` +
+                    `${recommendation}\n\n` +
+                    `=== TUMOR CHARACTERISTICS ===\n` +
+                    `1. Mean Radius: ${form.feature_1.value}\n` +
+                    `2. Mean Texture: ${form.feature_2.value}\n` +
+                    `3. Mean Perimeter: ${form.feature_3.value}\n` +
+                    `4. Mean Area: ${form.feature_4.value}\n` +
+                    `5. Mean Smoothness: ${form.feature_5.value}\n` +
+                    `6. Mean Compactness: ${form.feature_6.value}\n` +
+                    `7. Mean Concavity: ${form.feature_7.value}\n` +
+                    `8. Mean Concave Points: ${form.feature_8.value}\n` +
+                    `9. Mean Symmetry: ${form.feature_9.value}\n` +
+                    `10. Mean Fractal Dimension: ${form.feature_10.value}\n\n` +
+                    `Report generated on: ${new Date().toLocaleString()}`;
+                
+                const blob = new Blob([reportContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'breast_cancer_diagnosis_report.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        });
+    </script>
+</body>
+</html>
