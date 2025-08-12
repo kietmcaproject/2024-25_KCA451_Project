@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnosis Options</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Choose How You’d Like to Start Diagnosis</h1>
+    </header>
+    <main>
+        <div class="option-container">
+            <!-- Option 1: Manual Entry -->
+            <div class="option-card" id="manual-entry">
+                <div class="card-content">
+                    <h3>📝 Enter Key Medical Details</h3>
+                    <p>Fill out a short form with important values to get an instant prediction. No lab results needed.</p>
+                    <a href="{{ url_for('manual_entry') }}" class="btn">Start</a>
+                </div>
+            </div>
+
+            <!-- Option 2: Upload Lab Report (CSV) -->
+            <div class="option-card" id="csv-upload">
+                <div class="card-content">
+                    <h3>📄 Upload Lab Report (.csv)</h3>
+                    <p>Upload a .csv file with diagnostic data from a hospital or lab to get instant AI results.</p>
+                    <a href="{{ url_for('upload_csv') }}" class="btn">Upload</a>
+                </div>
+            </div>
+
+            <!-- Option 3: Symptom Checker Quiz -->
+            <div class="option-card" id="symptom-checker">
+                <div class="card-content">
+                    <h3>🔍 Take Symptom Checker Quiz</h3>
+                    <p>Answer a few quick questions about your symptoms to assess potential risk from home.</p>
+                    <a href="{{ url_for('symptom_checker') }}" class="btn">Start</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
