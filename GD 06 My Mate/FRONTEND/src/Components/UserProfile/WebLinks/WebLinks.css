@@ -1,0 +1,122 @@
+/* Main container for the Web Links */
+.weblinks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 700px;
+    margin: 30px auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Heading styling */
+  .weblinks h2 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-align: center;
+  }
+  
+  /* Form container */
+  .weblinks-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  /* Input fields styling */
+  .weblinks-input {
+    padding: 8px 12px;
+    font-size: 1em;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Button styling */
+  .weblinks-button {
+    padding: 10px 15px;
+    font-size: 1.1em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Hover effect on button */
+  .weblinks-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+  
+  /* Active state for buttons */
+  .weblinks-button:active {
+    transform: translateY(2px);
+  }
+  
+  /* Container for the links */
+  .links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  /* Link styling */
+  .weblink a {
+    font-size: 1.1em;
+    color: #ff6347;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    padding: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  /* Hover effect on link */
+  .weblink a:hover {
+    border-bottom: 2px solid #007bff;
+    color: #0056b3;
+  }
+  
+  /* No links available text */
+  .weblinks p {
+    font-size: 1.1em;
+    color: #555;
+    text-align: center;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .weblinks {
+      width: 90%;
+      padding: 15px;
+    }
+  
+    .weblinks h2 {
+      font-size: 1.8em;
+    }
+  
+    .weblinks-input {
+      font-size: 1em;
+      padding: 10px;
+    }
+  
+    .weblinks-button {
+      font-size: 1em;
+    }
+  }
+  

@@ -1,0 +1,83 @@
+.pf-user-posts {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .pf-h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    /* text-align: center; */
+  }
+  
+  .pf-post {
+    /* border: 1px solid red; */
+    background-color: white;
+    width: 100%;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pf-post-row {
+      /* border: 1px solid red; */
+    display: flex;
+    flex-wrap: wrap;
+    /* align-items: center; */
+  }
+  
+  .pf-post-content p {
+    margin: 4px 0;
+    color: #34495e;
+    min-width: 150px;
+    font-size: 14px;
+    flex: 1;
+  }
+  
+  .pf-post-content input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+  
+  .pf-post-content input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+  }
+  
+  .pf-delete-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pf-delete-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .pf-loading {
+    text-align: center;
+    padding: 30px;
+    color: #888;
+    font-size: 16px;
+  }
+  
