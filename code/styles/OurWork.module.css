@@ -1,0 +1,90 @@
+/* Section Titles */
+.sectionTitle {
+    color: #1e40af;
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1.2rem;
+}
+
+.subTitle {
+    color: #1e40af;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.2rem;
+}
+
+.description {
+    color: #2d3748;
+    font-size: 1.5rem;
+    font-weight: 2;
+    line-height: 1.8;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* General Card Style */
+.cardImage {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.cardTitle {
+    font-size: 1.2rem;
+    color: #1e3a8a;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.cardText {
+    color: #4a5568;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Specific Cards */
+.foodCard, .clothesCard, .toysCard {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.foodCard:hover,
+.clothesCard:hover,
+.toysCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Gallery */
+.galleryCard {
+    background-color: white;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0..3s ease;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.galleryCard:hover{
+    transform: scale(1.03);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.galleryImage {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
