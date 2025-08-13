@@ -1,0 +1,19 @@
+/* client/src/components/Header.css */
+header {
+    background-color: black;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+hr {
+    border: 0;
+    height: 1px;
+    background: black;
+    width: 45%;
+    margin-top: 3%;
+    margin-bottom: 4%;
+  
+}
