@@ -56,9 +56,11 @@ git clone <repo-link>
 cd <repo-folder>
 
 2️⃣ Create a Virtual Environment
+
 python -m venv venv
 
 3️⃣ Activate the Virtual Environment
+
 Windows (CMD):
 venv\Scripts\activate
 
@@ -69,9 +71,11 @@ Mac/Linux:
 source venv/bin/activate
 
 4️⃣ Install Dependencies
+
 pip install -r requirements.txt
 
 5️⃣ Run the Flask App
+
 python app.py
 
 The app will start on http://127.0.0.1:5000/
