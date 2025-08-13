@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <!-- Custom CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='home.css') }}"
+    />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <title>Customer Churn</title>
+    <style>
+      h1 {
+        text-align: center;
+      }
+      div {
+        text-align: center;
+      }
+      a {
+        align-items: center;
+      }
+      label {
+        margin-right: 20px;
+        text-align: right;
+        display: inline-block;
+        width: 150px;
+      }
+      /* Style for the dark mode toggle */
+      .theme-toggle {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+      }
+      .theme-toggle i {
+        font-size: 1.2rem;
+        color: var(--navbar-text);
+        cursor: pointer;
+      }
+      /* Toast container styling */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Toast Container for Notifications -->
+    <div class="toast-container">
+      <div
+        class="toast"
+        id="feedbackToast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        data-bs-autohide="true"
+        data-bs-delay="3000"
+      >
+        <div class="toast-header">
+          <strong class="me-auto">Notification</strong>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="toast-body" id="feedbackToastBody"></div>
+      </div>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+        <div class="container-fluid">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ms-auto">
+              <a class="nav-link nav-link-custom" href="/">
+                <b>Home</b>
+              </a>
+              <a
+                class="nav-link active nav-link-custom"
+                aria-current="page"
+                href="/web"
+              >
+                <b>Churn Prediction</b>
+              </a>
+              <!-- Dark Mode Toggle -->
+              <div class="theme-toggle">
+                <i id="themeIcon" class="fas fa-moon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <!-- Inner Header -->
+      <div class="inner-header flex">
+        <svg
+          version="1.1"
+          class="logo"
+          baseProfile="tiny"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 500 500"
+          xml:space="preserve"
+        >
+          <path
+            fill="#FFFFFF"
+            stroke="#000000"
+            stroke-width="10"
+            stroke-miterlimit="10"
+            d="M57,283"
+          />
+        </svg>
+        <h1 style="font-size: 80px">Churn Prediction</h1>
+      </div>
+
+      <!-- Waves Container -->
+      <div>
+        <svg
+          class="waves"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 24 150 28"
+          preserveAspectRatio="none"
+          shape-rendering="auto"
+        >
+          <defs>
+            <path
+              id="gentle-wave"
+              d="M-160 44c30 0 58-18 88-18s 58 18 88-18 58-18 88-18 58 18 88 18 v44h-352z"
+            />
+          </defs>
+          <g class="parallax">
+            <use
+              xlink:href="#gentle-wave"
+              x="48"
+              y="0"
+              fill="rgba(255,255,255,0.7)"
+            />
+            <use
+              xlink:href="#gentle-wave"
+              x="48"
+              y="3"
+              fill="rgba(255,255,255,0.5)"
+            />
+            <use
+              xlink:href="#gentle-wave"
+              x="48"
+              y="5"
+              fill="rgba(255,255,255,0.3)"
+            />
+            <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="detect container mt-5">
+      <h1 class="mb-4">Enter Customer Details</h1>
+      <form action="/predict" method="POST">
+        <div class="row">
+          <!-- Gender -->
+          <div class="col-md-6 mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select id="gender" name="a" class="form-select" required>
+              <option value="" disabled selected>Select Gender</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+            </select>
+          </div>
+          <!-- SeniorCitizen -->
+          <div class="col-md-6 mb-3">
+            <label for="SeniorCitizen" class="form-label">Senior Citizen</label>
+            <select id="SeniorCitizen" name="b" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+            </select>
+          </div>
+          <!-- Partner -->
+          <div class="col-md-6 mb-3">
+            <label for="Partner" class="form-label">Partner</label>
+            <select id="Partner" name="c" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <!-- Dependents -->
+          <div class="col-md-6 mb-3">
+            <label for="Dependents" class="form-label">Dependents</label>
+            <select id="Dependents" name="d" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <!-- Tenure -->
+          <div class="col-md-6 mb-3">
+            <label for="tenure" class="form-label">Tenure</label>
+            <input
+              id="tenure"
+              type="number"
+              name="e"
+              placeholder="Tenure (0-72)"
+              min="0"
+              max="72"
+              step="1"
+              class="form-control"
+              required
+            />
+          </div>
+          <!-- PhoneService -->
+          <div class="col-md-6 mb-3">
+            <label for="PhoneService" class="form-label">Phone Service</label>
+            <select id="PhoneService" name="f" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <!-- MultipleLines -->
+          <div class="col-md-6 mb-3">
+            <label for="MultipleLines" class="form-label">Multiple Lines</label>
+            <select id="MultipleLines" name="g" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="No phone service">No phone service</option>
+            </select>
+          </div>
+          <!-- InternetService -->
+          <div class="col-md-6 mb-3">
+            <label for="InternetService" class="form-label"
+              >Internet Service</label
+            >
+            <select id="InternetService" name="h" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="DSL">DSL</option>
+              <option value="Fiber optic">Fiber optic</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <!-- OnlineSecurity -->
+          <div class="col-md-6 mb-3">
+            <label for="OnlineSecurity" class="form-label"
+              >Online Security</label
+            >
+            <select id="OnlineSecurity" name="i" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="No internet service">No internet service</option>
+            </select>
+          </div>
+          <!-- OnlineBackup -->
+          <div class="col-md-6 mb-3">
+            <label for="OnlineBackup" class="form-label">Online Backup</label>
+            <select id="OnlineBackup" name="j" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="No internet service">No internet service</option>
+            </select>
+          </div>
+          <!-- DeviceProtection -->
+          <div class="col-md-6 mb-3">
+            <label for="DeviceProtection" class="form-label"
+              >Device Protection</label
+            >
+            <select id="DeviceProtection" name="k" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="No internet service">No internet service</option>
+            </select>
+          </div>
+          <!-- TechSupport -->
+          <div class="col-md-6 mb-3">
+            <label for="TechSupport" class="form-label">Tech Support</label>
+            <select id="TechSupport" name="l" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="No internet service">No internet service</option>
+            </select>
+          </div>
+          <!-- StreamingTV -->
+          <div class="col-md-6 mb-3">
+            <label for="StreamingTV" class="form-label">Streaming TV</label>
+            <select id="StreamingTV" name="m" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="No internet service">No internet service</option>
+            </select>
+          </div>
+          <!-- StreamingMovies -->
+          <div class="col-md-6 mb-3">
+            <label for="StreamingMovies" class="form-label"
+              >Streaming Movies</label
+            >
+            <select id="StreamingMovies" name="n" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="No internet service">No internet service</option>
+            </select>
+          </div>
+          <!-- Contract -->
+          <div class="col-md-6 mb-3">
+            <label for="Contract" class="form-label">Contract</label>
+            <select id="Contract" name="o" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Month-to-month">Month-to-month</option>
+              <option value="One year">One year</option>
+              <option value="Two year">Two year</option>
+            </select>
+          </div>
+          <!-- PaperlessBilling -->
+          <div class="col-md-6 mb-3">
+            <label for="PaperlessBilling" class="form-label"
+              >Paperless Billing</label
+            >
+            <select id="PaperlessBilling" name="p" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <!-- PaymentMethod -->
+          <div class="col-md-6 mb-3">
+            <label for="PaymentMethod" class="form-label">Payment Method</label>
+            <select id="PaymentMethod" name="q" class="form-select" required>
+              <option value="" disabled selected>Select Option</option>
+              <option value="Electronic check">Electronic check</option>
+              <option value="Mailed check">Mailed check</option>
+              <option value="Bank transfer (automatic)">
+                Bank transfer (automatic)
+              </option>
+              <option value="Credit card (automatic)">
+                Credit card (automatic)
+              </option>
+            </select>
+          </div>
+          <!-- MonthlyCharges -->
+          <div class="col-md-6 mb-3">
+            <label for="MonthlyCharges" class="form-label"
+              >Monthly Charges</label
+            >
+            <input
+              id="MonthlyCharges"
+              type="number"
+              name="r"
+              placeholder="MonthlyCharges"
+              step="0.01"
+              min="0"
+              class="form-control"
+              required
+            />
+          </div>
+          <!-- TotalCharges -->
+          <div class="col-md-6 mb-3">
+            <label for="TotalCharges" class="form-label">Total Charges</label>
+            <input
+              id="TotalCharges"
+              type="number"
+              name="s"
+              placeholder="TotalCharges"
+              step="0.01"
+              min="0"
+              class="form-control"
+              required
+            />
+          </div>
+        </div>
+        <div class="center">
+          <input class="button-63" type="submit" value="Predict" name="zee" />
+        </div>
+      </form>
+    </div>
+
+    <!-- Prediction Results -->
+    <div class="container mt-5">
+      {% if prediction_text %}
+      <div class="alert alert-info" role="alert">
+        <h2>{{ prediction_text }}</h2>
+      </div>
+      {% endif %} {% if prob_text %}
+      <p id="probText">{{ prob_text }}</p>
+      <div class="d-flex justify-content-center">
+        <canvas
+          id="probChart"
+          style="max-width: 400px; max-height: 200px"
+        ></canvas>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Footer Section -->
+    <div class="container1">
+      <footer class="bg-dark text-center text-white">
+        <div class="container p-5 pb-8">
+          <section class="mb-4">
+            <a
+              class="btn btn-outline-light btn-floating m-1"
+              href="https://www.facebook.com/"
+              role="button"
+              target="_blank"
+            >
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a
+              class="btn btn-outline-light btn-floating m-1"
+              href="https://twitter.com/"
+              role="button"
+              target="_blank"
+            >
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a
+              class="btn btn-outline-light btn-floating m-1"
+              href="https://www.google.com/"
+              role="button"
+              target="_blank"
+            >
+              <i class="fab fa-google"></i>
+            </a>
+            <a
+              class="btn btn-outline-light btn-floating m-1"
+              href="https://www.instagram.com/"
+              role="button"
+              target="_blank"
+            >
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a
+              class="btn btn-outline-light btn-floating m-1"
+              href="https://in.linkedin.com/"
+              role="button"
+              target="_blank"
+            >
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a
+              class="btn btn-outline-light btn-floating m-1"
+              href="https://github.com/"
+              role="button"
+              target="_blank"
+            >
+              <i class="fab fa-github"></i>
+            </a>
+          </section>
+          <!-- Feedback Form Section -->
+          <section class="mb-4">
+            <h5>We Value Your Feedback!</h5>
+            <form id="feedbackForm">
+              <div class="row justify-content-center">
+                <div class="col-md-3 mb-3">
+                  <input
+                    type="text"
+                    id="feedbackName"
+                    name="name"
+                    class="form-control"
+                    placeholder="Your Name"
+                    required
+                  />
+                </div>
+                <div class="col-md-3 mb-3">
+                  <input
+                    type="email"
+                    id="feedbackEmail"
+                    name="email"
+                    class="form-control"
+                    placeholder="Your Email"
+                    required
+                  />
+                </div>
+                <div class="col-md-3 mb-3">
+                  <textarea
+                    id="feedbackMessage"
+                    name="feedback"
+                    class="form-control"
+                    placeholder="Your Feedback"
+                    rows="2"
+                    required
+                  ></textarea>
+                </div>
+                <div class="col-md-2 mb-3">
+                  <button type="submit" class="btn btn-primary w-100">
+                    Submit
+                  </button>
+                </div>
+              </div>
+              <!-- Loading Spinner -->
+              <div class="spinner-container" id="feedbackSpinner">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              <!-- Feedback Messages (Removed) -->
+              <div id="feedbackMessage" class="mt-3"></div>
+            </form>
+          </section>
+        </div>
+        <div
+          class="text-center p-3"
+          style="background-color: rgba(0, 0, 0, 0.2)"
+        >
+          © 2025 Copyright:
+          <a class="text-white" href="/">Customer Churn Prediction</a>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'9255c778fd7dbcae',t:'MTc0MjgxNTIyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'9257a15f2c8cdd1d',t:'MTc0MjgzNDYzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

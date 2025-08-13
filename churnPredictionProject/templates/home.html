@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Churn Prediction</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <!-- Custom CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='home.css') }}"
+    />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      /* Custom styles for the loading spinner */
+      .spinner-container {
+        display: none;
+        text-align: center;
+        margin-top: 10px;
+      }
+      /* Style for the dark mode toggle */
+      .theme-toggle {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+      }
+      .theme-toggle i {
+        font-size: 1.2rem;
+        color: var(--navbar-text);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header Section -->
+    <div class="header">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+        <div class="container-fluid">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Close"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ms-auto">
+              <a
+                class="nav-link active nav-link-custom"
+                aria-current="page"
+                href="/"
+              >
+                <b>Home</b>
+              </a>
+              <a
+                class="nav-link nav-link-custom"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#otpModal"
+              >
+                <b>Churn Prediction</b>
+              </a>
+              <!-- Dark Mode Toggle -->
+              <div class="theme-toggle">
+                <i id="themeIcon" class="fas fa-moon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <!-- Inner Header -->
+      <div class="inner-header flex">
+        <svg
+          version="1.1"
+          class="logo"
+          baseProfile="tiny"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 500 500"
+          xml:space="preserve"
+        >
+          <path
+            fill="#FFFFFF"
+            stroke="#000000"
+            stroke-width="10"
+            stroke-miterlimit="10"
+            d="M57,283"
+          />
+        </svg>
+        <h1 class="imp" style="font-size: 80px">Customer Churn Prediction</h1>
+      </div>
+
+      <!-- Waves Container -->
+      <div>
+        <svg
+          class="waves"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 24 150 28"
+          preserveAspectRatio="none"
+          shape-rendering="auto"
+        >
+          <defs>
+            <path
+              id="gentle-wave"
+              d="M-160 44c30 0 58-18 88-18s 58 18 88-18 58-18 88-18 58 18 88 18 v44h-352z"
+            />
+          </defs>
+          <g class="parallax">
+            <use
+              xlink:href="#gentle-wave"
+              x="48"
+              y="0"
+              fill="rgba(255,255,255,0.7)"
+            />
+            <use
+              xlink:href="#gentle-wave"
+              x="48"
+              y="3"
+              fill="rgba(255,255,255,0.5)"
+            />
+            <use
+              xlink:href="#gentle-wave"
+              x="48"
+              y="5"
+              fill="rgba(255,255,255,0.3)"
+            />
+            <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- OTP Modal -->
+    <div
+      class="modal fade"
+      id="otpModal"
+      tabindex="-1"
+      aria-labelledby="otpModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="otpModalLabel">Verify Your Email</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Email Input Form -->
+            <div id="emailForm">
+              <form id="emailSubmitForm">
+                <div class="mb-3">
+                  <label for="emailInput" class="form-label"
+                    >Enter your email address</label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="emailInput"
+                    name="email"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary">Send OTP</button>
+              </form>
+            </div>
+            <!-- OTP Input Form (hidden initially) -->
+            <div id="otpForm" style="display: none">
+              <form id="otpSubmitForm">
+                <div class="mb-3">
+                  <label for="otpInput" class="form-label"
+                    >Enter the OTP sent to your email</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="otpInput"
+                    name="otp"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <p>Time remaining: <span id="otpTimer">2:00</span></p>
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    id="resendOtpBtn"
+                    onclick="resendOtp()"
+                    disabled
+                  >
+                    Resend OTP
+                  </button>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Verify OTP
+                </button>
+              </form>
+            </div>
+            <!-- Loading Spinner -->
+            <div class="spinner-container" id="loadingSpinner">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <!-- Error/Success Messages -->
+            <div id="otpMessage" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="wrapper">
+      <!-- Carousel Section -->
+      <div id="churnCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button
+            type="button"
+            data-bs-target="#churnCarousel"
+            data-bs-slide-to="0"
+            class="active"
+            aria-current="true"
+            aria-label="Slide 1"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#churnCarousel"
+            data-bs-slide-to="1"
+            aria-label="Slide 2"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#churnCarousel"
+            data-bs-slide-to="2"
+            aria-label="Slide 3"
+          ></button>
+        </div>
+        <div class="carousel-inner">
+          <!-- Slide 1 -->
+          <div class="carousel-item active">
+            <img
+              src="{{ url_for('static', filename='1.png') }}"
+              class="d-block mx-auto"
+              alt="Customer Retention"
+              width="600"
+              height="400"
+            />
+            <div class="carousel-caption d-none d-md-block">
+              <h5>What is Churn Prediction?</h5>
+              <p>
+                Churn prediction helps businesses identify customers likely to
+                leave, enabling proactive retention strategies.
+              </p>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-item">
+            <img
+              src="{{ url_for('static', filename='2.jpeg') }}"
+              class="d-block mx-auto"
+              alt="Machine Learning"
+              width="600"
+              height="400"
+            />
+            <div class="carousel-caption d-none d-md-block">
+              <h5>How Does Our App Work?</h5>
+              <p>
+                Our app uses machine learning to analyze customer data and
+                predict churn probability with high accuracy.
+              </p>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-item">
+            <img
+              src="{{ url_for('static', filename='3.jpeg') }}"
+              class="d-block mx-auto"
+              alt="Business Growth"
+              width="600"
+              height="400"
+            />
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Why It Matters</h5>
+              <p>
+                Reducing churn can save costs and improve customer
+                satisfaction—start predicting today!
+              </p>
+            </div>
+          </div>
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#churnCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#churnCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div id="ftr">
+      <div class="container1">
+        <footer class="bg-dark text-center text-white">
+          <div class="container p-5 pb-8">
+            <section class="mb-4">
+              <a
+                class="btn btn-outline-light btn-floating m-1"
+                href="https://www.facebook.com/"
+                role="button"
+                target="_blank"
+              >
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a
+                class="btn btn-outline-light btn-floating m-1"
+                href="https://twitter.com/"
+                role="button"
+                target="_blank"
+              >
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a
+                class="btn btn-outline-light btn-floating m-1"
+                href="https://www.google.com/"
+                role="button"
+                target="_blank"
+              >
+                <i class="fab fa-google"></i>
+              </a>
+              <a
+                class="btn btn-outline-light btn-floating m-1"
+                href="https://www.instagram.com/"
+                role="button"
+                target="_blank"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a
+                class="btn btn-outline-light btn-floating m-1"
+                href="https://in.linkedin.com/"
+                role="button"
+                target="_blank"
+              >
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a
+                class="btn btn-outline-light btn-floating m-1"
+                href="https://github.com/"
+                role="button"
+                target="_blank"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+            </section>
+          </div>
+          <div
+            class="text-center p-3"
+            style="background-color: rgba(0, 0, 0, 0.2)"
+          >
+            © 2025 Copyright:
+            <a class="text-white" href="/">CustomerChurn.com</a>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Chatbot Section -->
+    <div class="chatbot-container">
+      <div class="chatbot-button" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i> Chat with Us
+      </div>
+      <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h5>Churn Prediction Chatbot</h5>
+          <div>
+            <button class="chatbot-clear" onclick="clearChat()">Clear</button>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+          </div>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <!-- Messages will be added here dynamically -->
+        </div>
+        <div class="chatbot-footer">
+          <div class="chatbot-questions" id="chatbotQuestions">
+            <button class="chatbot-question" onclick="handleQuestion(1)">
+              Which model has the highest accuracy?
+            </button>
+            <button class="chatbot-question" onclick="handleQuestion(2)">
+              How many models are used in the app?
+            </button>
+            <button class="chatbot-question" onclick="handleQuestion(3)">
+              What models are used for churn prediction?
+            </button>
+            <button class="chatbot-question" onclick="handleQuestion(4)">
+              What is churn prediction?
+            </button>
+            <button class="chatbot-question" onclick="handleQuestion(5)">
+              Why is churn prediction important?
+            </button>
+            <button class="chatbot-question" onclick="handleQuestion(6)">
+              How can businesses reduce churn?
+            </button>
+            <button class="chatbot-question" onclick="handleQuestion(7)">
+              What strategies improve business through churn prediction?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Include the external JavaScript file -->
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+  </body>
+</html>
