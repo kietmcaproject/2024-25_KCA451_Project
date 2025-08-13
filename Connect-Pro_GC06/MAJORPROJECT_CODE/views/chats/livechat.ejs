@@ -1,0 +1,63 @@
+
+<% layout("layouts/boilerplate") -%>
+
+<div class="container">
+
+    <ul id="messages">
+
+        <%if(chatMessages.length){%>
+        <h5>Reply from Admin</h5>
+        <% chatMessages.forEach((chat) => { %>
+          <li>
+            <i><b>@<%=chat.userId.username%></b></i> &nbsp;&nbsp;
+            <b><%= chat.createdAt.toLocaleString() %></b>: <%= chat.message %> <br>
+            <i style="color: green;">Reply: <%= chat.reply || 'Waiting for reply...' %></i>
+          </li>
+        <% }) %>
+      </ul>
+
+    <% } %>
+      
+    <!-- <h5>Ask your query</h5> -->
+    <div class="row mt-3">
+    <div class="col-6">
+    <form id="form" action="" novalidate class="needs-validation">
+        <label for="input" class="form-label">Ask your query</label>
+        <input id="input" autocomplete="off" placeholder="Type a message..." class="form-control" required/ >
+        <br>
+        <button class="btn btn-dark edit-btn mb-3">Send</button>
+    </form>
+  </div>  
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const messages = document.getElementById('messages');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (input.value) {
+            socket.emit('chat message', { 
+                userId: "<%= currUser._id %>",
+                message: input.value,
+                sentBy: "user"
+            });
+            input.value = '';
+            window.location.href = "/chat";
+        }
+    });
+
+    socket.on('chat message', function(data) {
+        const item = document.createElement('li');
+        item.textContent = `${data.sentBy}: ${data.message}`;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+</script>
+
+
+  

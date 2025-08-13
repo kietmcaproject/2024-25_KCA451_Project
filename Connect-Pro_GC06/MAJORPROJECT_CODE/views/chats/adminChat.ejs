@@ -1,0 +1,29 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<h3>Admin Panel - Reply to Queries</h3>
+
+<table border="1" cellpadding="10">
+
+  <%if(chats.length){%>
+  <tr>
+    <th>User</th>
+    <th>Query</th>
+    <th>Reply</th>
+    <th>Action</th>
+  </tr>
+ <% } %>
+  <% chats.forEach((chat) => { %>
+    <tr>
+      <td><%= chat.userId.username || chat.userId.email %></td> <!-- Show username or email -->
+      <td><%= chat.message %></td>
+      <td><%= chat.reply || 'No reply yet' %></td>
+      <td>
+        <form action="/admin/chats/<%= chat._id %>/reply" method="POST" novalidate class="needs-validation">
+          <input type="text" name="reply" placeholder="Type reply here..." class="form-control" required>
+          <!-- <br> -->
+          <button type="submit" class="btn btn-dark edit-btn mb-3">Send Reply</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+</table>
